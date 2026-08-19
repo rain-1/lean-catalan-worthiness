@@ -80,7 +80,7 @@ lemma val_LE (n : ℕ) :
   have hfac : ((LE n : ℤ) : ℚ) = ((n + 1 : ℕ) : ℚ) ^ 2 := by
     unfold LE; push_cast; ring
   have hne : ((n + 1 : ℕ) : ℚ) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero n
-  rw [hfac, padicValRat.pow hne, padicValRat_two_natCast]
+  rw [hfac, padicValRat.pow, padicValRat_two_natCast]
   ring
 
 lemma val_CE (n : ℕ) : padicValRat 2 ((CE n : ℚ)) = 2 := by
@@ -109,7 +109,7 @@ lemma val_RE_succ (n : ℕ) :
   have h2 : (((n + 1 : ℕ) : ℚ) ^ 2) ≠ 0 := pow_ne_zero _ hne
   have h3 : (((-1 : ℤ)) : ℚ) ≠ 0 := by norm_num
   rw [hfac, padicValRat.mul (mul_ne_zero h1 h2) h3, padicValRat.mul h1 h2,
-    padicValRat_two_two_pow 5, padicValRat.pow hne, padicValRat_two_natCast,
+    padicValRat_two_two_pow 5, padicValRat.pow, padicValRat_two_natCast,
     padicValRat_two_of_odd_int ⟨-1, by ring⟩]
   ring
 
@@ -285,8 +285,8 @@ theorem val_E_ratio_diff (n : ℕ) :
     rw [padicValRat.div h1 h2, hden', hnum',
       padicValRat.mul (by norm_num) (by positivity),
       padicValRat_two_of_odd_int ⟨-1, by ring⟩,
-      padicValRat.pow (by norm_num), padicValRat_two_two_pow 5,
-      padicValRat.pow hne, padicValRat_two_natCast]
+      padicValRat.pow, padicValRat_two_two_pow 5,
+      padicValRat.pow, padicValRat_two_natCast]
     ring
   have hs : (s2 n : ℤ) = (s2 (n + 1) : ℤ) - 1 + (padicValNat 2 (n + 1) : ℤ) := by
     have := s2_pred (n + 1) (by omega)

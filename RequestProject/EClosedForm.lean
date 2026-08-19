@@ -249,7 +249,6 @@ lemma Btil_rec (n : ℕ) :
       + 32 * ((n : ℚ) + 1) ^ 2 * Btil n = 0 := by
   set N := n + 2 with hN
   have hmain := congrArg (fun p : ℚ[X] => p.coeff (n + 2)) (Lop_PB N)
-  simp only at hmain
   -- left-hand side
   have hLHS : (4 * Lop (PB (N + 1))).coeff (n + 2)
       = 4 * (((n : ℚ) + 2) ^ 2 * (PB (N + 1)).coeff (n + 2)

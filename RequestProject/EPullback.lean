@@ -211,7 +211,7 @@ lemma coeff_one_sub_four_X_pow_eq_zero (k j : ℕ) (h : k < j) :
       rw [pow_succ, PowerSeries.coeff_mul]
       refine Finset.sum_eq_zero ?_
       intro p hp
-      have hp' : p.1 + p.2 = j := Finset.mem_antidiagonal.mp hp
+      have hp' : p.1 + p.2 = j := Finset.HasAntidiagonal.mem_antidiagonal.mp hp
       by_cases h2 : p.2 ≤ 1
       · rw [ih p.1 (by omega)]
         ring

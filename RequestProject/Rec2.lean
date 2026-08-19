@@ -70,7 +70,7 @@ lemma padicValRat_two_of_odd_int {k : ℤ} (hk : Odd k) : padicValRat 2 (k : ℚ
   simp
 
 lemma padicValRat_two_two_pow (k : ℕ) : padicValRat 2 ((2 : ℚ) ^ k) = k := by
-  rw [padicValRat.pow (by norm_num)]
+  rw [padicValRat.pow]
   have h2 : ((2 : ℕ) : ℚ) = (2 : ℚ) := by norm_num
   rw [← h2, padicValRat_two_natCast]
   simp

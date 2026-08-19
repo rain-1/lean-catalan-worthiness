@@ -45,7 +45,7 @@ lemma coeff_Xpow_mul (j n : ℕ) (f : R⟦X⟧) :
   · rw [if_neg h, PowerSeries.coeff_mul]
     apply Finset.sum_eq_zero
     intro p hp
-    have hp' := Finset.antidiagonal.fst_le hp
+    have hp' := Finset.HasAntidiagonal.antidiagonal.fst_le hp
     have hz : coeff p.1 (X ^ j : R⟦X⟧) = 0 := by
       rw [PowerSeries.coeff_X_pow]
       exact if_neg (by omega)

@@ -100,20 +100,21 @@ theorem tsum_pow_comp_quadratic (c : ℕ → ℝ) (x : ℝ)
     rw [hsum.tsum_prod' (fun k => (hrow k).summable)]
     exact tsum_congr (fun k => (hrow k).tsum_eq)
   have hR : ∑' p : ℕ × ℕ, u p = ∑' n, subCoef c n * x ^ n := by
-    have he := (Finset.sigmaAntidiagonalEquivProd (A := ℕ)).tsum_eq u
+    have he := (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd (A := ℕ)).tsum_eq u
     rw [← he]
-    have hsig : Summable (fun s : Σ n : ℕ, Finset.antidiagonal n =>
-        u (Finset.sigmaAntidiagonalEquivProd s)) :=
-      (Finset.sigmaAntidiagonalEquivProd (A := ℕ)).summable_iff.mpr hsum
+    have hsig : Summable (fun s : Σ n : ℕ, Finset.HasAntidiagonal.antidiagonal n =>
+        u (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd s)) :=
+      (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd (A := ℕ)).summable_iff.mpr hsum
     rw [hsig.tsum_sigma]
     refine tsum_congr (fun n => ?_)
     rw [tsum_fintype]
-    have hstep : ∀ b : (Finset.antidiagonal n : Finset (ℕ × ℕ)),
-        u (Finset.sigmaAntidiagonalEquivProd (⟨n, b⟩ : Σ n : ℕ, Finset.antidiagonal n))
+    have hstep : ∀ b : (Finset.HasAntidiagonal.antidiagonal n : Finset (ℕ × ℕ)),
+        u (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd
+          (⟨n, b⟩ : Σ n : ℕ, Finset.HasAntidiagonal.antidiagonal n))
           = u (b : ℕ × ℕ) := by
-      intro b; simp [Finset.sigmaAntidiagonalEquivProd]
+      intro b; simp [Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd]
     rw [Finset.sum_congr rfl (fun b _ => hstep b)]
-    rw [Finset.sum_coe_sort (Finset.antidiagonal n) (fun kl => u kl)]
+    rw [Finset.sum_coe_sort (Finset.HasAntidiagonal.antidiagonal n) (fun kl => u kl)]
     rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
     rw [subCoef, Finset.sum_mul]
     refine Finset.sum_congr rfl (fun k hk => ?_)
@@ -183,7 +184,9 @@ theorem subst_identity (c : ℕ → ℝ) (A : ℕ → ℝ) (hA : ∀ n, A n = su
       analyticAt_id.mul (analyticAt_const.sub (analyticAt_const.mul analyticAt_id))
     have := AnalyticAt.comp (g := fun w : ℝ => ∑' k, c k * w ^ k)
       (f := fun y : ℝ => y * (1 - 4 * y)) (hg _ (hmap y hy)) hpoly
-    simpa [Function.comp] using this
+    convert this using 1
+    ext z
+    rfl
   have heq : (fun x : ℝ => ∑' n, A n * x ^ n)
       =ᶠ[𝓝 (0 : ℝ)] (fun y : ℝ => ∑' k, c k * (y * (1 - 4 * y)) ^ k) := by
     filter_upwards [Metric.ball_mem_nhds (0 : ℝ) (show (0:ℝ) < 1/32 by norm_num)] with y hy

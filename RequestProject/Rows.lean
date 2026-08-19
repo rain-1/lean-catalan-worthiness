@@ -91,7 +91,7 @@ lemma padicValRat_Sfac_nonneg (n : ℕ) : 0 ≤ padicValRat 2 ((Sfac n : ℚ)) :
 lemma padicValRat_two_pow (k : ℕ) : padicValRat 2 ((2 : ℚ) ^ k) = (k : ℤ) := by
   have hself : padicValRat 2 (2 : ℚ) = 1 := by
     simpa using padicValRat.self (p := 2) (by norm_num)
-  rw [padicValRat.pow (by norm_num : (2:ℚ) ≠ 0), hself, mul_one]
+  rw [padicValRat.pow, hself, mul_one]
 
 /-- Equations (9.3)–(9.4) for the reduced determinant: with the base-note clearing bound
 `e_{3n} ≥ 12n + 1` one has `v₂(h n / S n) ≥ 24 n`. -/

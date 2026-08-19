@@ -94,12 +94,12 @@ lemma bq_ne_zero_and_val {x : ℚ} (hx : HalfOdd x) (n : ℕ) :
             = (s2 (n + 1) : ℤ) + 1 - (padicValNat 2 (n + 1 + 1) : ℤ) := s2_succ (n + 1)
         have hRv : padicValRat 2 (bR (n + 1)) = 2 * (padicValNat 2 (n + 1) : ℤ) := by
           have h : bR (n + 1) = -(((n + 1 : ℕ) : ℚ) ^ 2) := by unfold bR; push_cast; ring
-          rw [h, padicValRat.neg, padicValRat.pow (by exact_mod_cast Nat.succ_ne_zero n),
+          rw [h, padicValRat.neg, padicValRat.pow,
             padicValRat_two_natCast]
           ring
         have hLv : padicValRat 2 (bL (n + 1)) = 2 * (padicValNat 2 (n + 1 + 1) : ℤ) := by
           have h : bL (n + 1) = (((n + 1 + 1 : ℕ) : ℚ) ^ 2) := by unfold bL; push_cast; ring
-          rw [h, padicValRat.pow (by exact_mod_cast Nat.succ_ne_zero (n + 1)),
+          rw [h, padicValRat.pow,
             padicValRat_two_natCast]
           ring
         have hlt : padicValRat 2 (bC x (n + 1)) + padicValRat 2 (bq x (n + 1))
@@ -206,7 +206,7 @@ lemma val_bratio_diff {x : ℚ} (hx : HalfOdd x) (n : ℕ) :
     rw [show ((n : ℚ) + 1) = ((n + 1 : ℕ) : ℚ) by push_cast; ring, padicValRat_two_natCast]
   rw [bratio_diff hx n, one_div, padicValRat.inv,
     padicValRat.mul hn (mul_ne_zero h0 h1), padicValRat.mul h0 h1,
-    padicValRat.pow hn1, hvn, val_bq hx n, val_bq hx (n + 1)]
+    padicValRat.pow, hvn, val_bq hx n, val_bq hx (n + 1)]
   have hs := s2_succ n
   unfold bwt
   push_cast
@@ -305,7 +305,7 @@ lemma val_gCoef {x : ℚ} (hx : HalfOdd x) (k : ℕ) :
     padicValRat 2 (gCoef (x ^ 2 - x) k) = -4 * (k : ℤ) + 2 * (s2 k : ℤ) := by
   unfold gCoef
   rw [padicValRat.div (betaCoef_ne_zero hx k) (pow_ne_zero _ (factorial_ne_zero_rat k)),
-    val_betaCoef hx, padicValRat.pow (factorial_ne_zero_rat k), val_factorial_rat]
+    val_betaCoef hx, padicValRat.pow, val_factorial_rat]
   ring
 
 /-! #### Norms -/

@@ -105,7 +105,6 @@ lemma Atil_rec (n : ℕ) :
       + 32 * ((n : ℚ) + 1) ^ 2 * Atil n = 0 := by
   set N := n + 2 with hN
   have hmain := congrArg (fun p : ℚ[X] => p.coeff (n + 2)) (Lop_PG N)
-  simp only at hmain
   have hLHS : (4 * Lop (PG (N + 1))).coeff (n + 2)
       = 4 * (((n : ℚ) + 2) ^ 2 * (PG (N + 1)).coeff (n + 2)
           - (12 * ((n : ℚ) + 1) * ((n : ℚ) + 2) + 4) * (PG (N + 1)).coeff (n + 1)

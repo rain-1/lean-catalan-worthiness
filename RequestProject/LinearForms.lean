@@ -386,7 +386,6 @@ lemma absW_pos (k : ℕ) : 0 < absW k := by
 
 lemma abs_WZ_eq (k : ℕ) : |((WZ k : ℚ) : ℝ)| = absW k := by
   have h := congrArg (fun z : ℚ => (z : ℝ)) (WZ_closed_form k)
-  simp only at h
   have hval : ((WZ k : ℚ) : ℝ)
       = (-1 : ℝ) ^ k * ((20 * ((k : ℝ) + 1) ^ 2 - 8 * ((k : ℝ) + 1) + 1)
         / (8 * ((k : ℝ) + 1) ^ 2 * (2 * (k : ℝ) + 1) ^ 2)) := by

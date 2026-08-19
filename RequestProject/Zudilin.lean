@@ -113,7 +113,7 @@ lemma val_LZ (m : ℕ) :
     exact_mod_cast this
   have h2' : ((m + 1 : ℕ) : ℚ) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero m
   rw [hfac, padicValRat.mul (mul_ne_zero h1 h2) h3, padicValRat.mul h1 h2,
-    padicValRat_two_two_pow 2, padicValRat.pow h2', padicValRat_two_natCast,
+    padicValRat_two_two_pow 2, padicValRat.pow, padicValRat_two_natCast,
     padicValRat_two_of_odd_int hodd]
   push_cast
   ring
@@ -139,7 +139,7 @@ lemma val_RZ_succ (m : ℕ) :
     exact_mod_cast this
   have h2' : ((m + 1 : ℕ) : ℚ) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero m
   rw [hfac, padicValRat.mul (mul_ne_zero h1 h2) h3, padicValRat.mul h1 h2,
-    padicValRat_two_two_pow 2, padicValRat.pow h2', padicValRat_two_natCast,
+    padicValRat_two_two_pow 2, padicValRat.pow, padicValRat_two_natCast,
     padicValRat_two_of_odd_int hodd]
   push_cast
   ring
@@ -367,7 +367,7 @@ theorem val_WZ (k : ℕ) :
     mul_ne_zero (by norm_num) (pow_ne_zero _ ha)
   rw [WZ_eq_div, padicValRat.div h1 (mul_ne_zero h2 hb), padicValRat.mul h2 hb,
     padicValRat.mul (by norm_num : ((2 : ℚ) ^ 3) ≠ 0) (pow_ne_zero _ ha),
-    padicValRat_two_two_pow 3, padicValRat.pow ha, padicValRat_two_natCast,
+    padicValRat_two_two_pow 3, padicValRat.pow, padicValRat_two_natCast,
     padicValRat_two_of_odd_int hodd, padicValRat_two_of_odd_int hoddb]
   ring
 
