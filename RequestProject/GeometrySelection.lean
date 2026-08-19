@@ -91,7 +91,6 @@ lemma single_step (α : ℝ) (a1 a2 Y1 Y2 S T : ℤ) (hS : 0 < S) (hT : 0 < T)
     exact abs_pos.mpr this
   have habs : MR ^ 2 * DR = ((δ : ℤ) : ℝ) * AB := by
     have hc := congrArg (fun z : ℤ => (z : ℝ)) hkey
-    simp only at hc
     push_cast at hc
     rw [hMR, hDR, hAB]
     push_cast

@@ -36,19 +36,17 @@ lemma integral_pow_mul_log (n : ℕ) :
     intro x hx
     have hx0 : x ≠ 0 := ne_of_gt hx.1
     have h1 : HasDerivAt (fun t : ℝ => t ^ (n + 1) / ((n : ℝ) + 1)) (x ^ n) x := by
-      have h := (hasDerivAt_pow (n + 1) x).div_const ((n : ℝ) + 1)
-      convert h using 1
+      refine ((hasDerivAt_pow (n + 1) x).div_const ((n : ℝ) + 1)).congr_deriv ?_
       push_cast
       field_simp
     have h2 : HasDerivAt Real.log x⁻¹ x := Real.hasDerivAt_log hx0
     have h4 : HasDerivAt (fun t : ℝ => t ^ (n + 1) / ((n : ℝ) + 1) ^ 2)
         (x ^ n / ((n : ℝ) + 1)) x := by
-      have h := (hasDerivAt_pow (n + 1) x).div_const (((n : ℝ) + 1) ^ 2)
-      convert h using 1
+      refine ((hasDerivAt_pow (n + 1) x).div_const (((n : ℝ) + 1) ^ 2)).congr_deriv ?_
       push_cast
       field_simp
     have h5 := (h1.mul h2).sub h4
-    convert h5 using 1
+    refine h5.congr_deriv ?_
     field_simp
     ring
   have hzero : Tendsto
@@ -198,7 +196,7 @@ lemma uR_eq_integral_rat (n : ℕ) :
     have h2 : HasDerivAt (fun u : ℝ => 1 + u ^ 2) (2 * x) x := by
       simpa using (hasDerivAt_pow 2 x).const_add 1
     have h3 := h1.div h2 hne
-    convert h3 using 1
+    refine h3.congr_deriv ?_
     field_simp
     ring
   have hcont : ContinuousOn (fun x : ℝ => 2 * (1 - x ^ 2) / (1 + x ^ 2) ^ 2) (uIcc (0 : ℝ) 1) := by
