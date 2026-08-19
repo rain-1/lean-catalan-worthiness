@@ -1,5 +1,21 @@
 This project was edited by [Aristotle](https://aristotle.harmonic.fun).
 
+## API documentation
+
+Auto-generated with [doc-gen4](https://github.com/leanprover/doc-gen4) from the
+nested `docbuild/` project (pinned to the same Lean toolchain):
+
+```
+cd docbuild
+MATHLIB_NO_CACHE_ON_UPDATE=1 lake update doc-gen4
+lake build RequestProject:docs
+```
+
+Output lands in `docbuild/.lake/build/doc/`; serve it with
+`python3 -m http.server` from that directory. On pushes to `main`, CI
+(`.github/workflows/docs.yml`) builds the docs and deploys them to GitHub
+Pages.
+
 ## Metadata
 
 See [formalization.yaml](./formalization.yaml) for provenance, scope, axioms, and

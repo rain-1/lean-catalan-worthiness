@@ -1,0 +1,50 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Fetch mathlib cache
+        run: lake exe cache get
+
+      - name: Build project
+        run: lake build
+
+      - name: Build documentation
+        run: |
+          cd docbuild
+          MATHLIB_NO_CACHE_ON_UPDATE=1 lake update doc-gen4
+          lake build RequestProject:docs
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docbuild/.lake/build/doc
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

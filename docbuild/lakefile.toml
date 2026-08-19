@@ -1,0 +1,14 @@
+name = "docbuild"
+reservoir = false
+version = "0.1.0"
+packagesDir = "../.lake/packages"
+
+[[require]]
+scope = "leanprover"
+name = "doc-gen4"
+# Pinned to match the project's Lean toolchain (leanprover/lean4:v4.32.2).
+rev = "v4.32.2"
+
+[[require]]
+name = "RequestProject"
+path = "../"
