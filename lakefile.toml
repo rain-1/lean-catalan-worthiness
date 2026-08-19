@@ -15,3 +15,11 @@ rev = "7715064f690d0689f30889846f4e2c5e7ec0c47e"
 [[lean_lib]]
 name = "RequestProject"
 globs = ["RequestProject.+"]
+
+# Comparator (leanprover/comparator) challenge/solution modules; not part of the
+# default build. Build explicitly with `lake build Challenge Solution`.
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "Solution"

@@ -1,0 +1,114 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml (v0.4): repo-root metadata for formalization projects.
+version: "v0.4"
+
+project:
+  name: "Catalan worthiness"
+  authors:
+    - "rain1"
+    - "Aristotle (Harmonic)"
+  responsible_maintainers:
+    - "rain1"
+  license: "unlicensed (no LICENSE file at time of writing)"
+
+sources:
+  - title: "The base note on worthiness of approximation sequences"
+    authors: ["rain1"]
+    type: "unpublished note"
+    location: "Sections 1–22; worthiness δ(q,p) (Definition 1.2), the lattice construction and the balanced-minima estimates (22.20)–(22.25)"
+    relationship: "formalizes"
+  - title: "The unconditional note"
+    authors: ["rain1"]
+    type: "unpublished note"
+    location: "Section 10 (Theorem 10.1, the Catalan worthiness theorem) and Section 11 (Theorem 11.1, the balanced two-row selection)"
+    relationship: "formalizes"
+
+related_formalizations:
+  - name: "mathlib4"
+    id: "https://github.com/leanprover-community/mathlib4"
+    note: "foundation of the development (pinned at v4.32.2)"
+  - name: "PrimeNumberTheoremAnd (PNT+)"
+    id: "https://github.com/AlexKontorovich/PrimeNumberTheoremAnd"
+    note: "supplies the weak prime number theorem (WeakPNT'') used for the growth rate of the least-common-multiple sequence (RequestProject/PNT.lean)"
+
+classification:
+  arxiv: ["math.NT"]
+  msc2020: ["11J72", "11J82"]
+
+status:
+  scope: >
+    Formalizes the worthiness (construction quality) invariant δ(q,p) for admissible
+    approximation sequences, Archimedean and p-adic rate machinery for the Pade/Zudilin
+    approximants to Catalan's constant, and assembles the main theorem: an admissible
+    approximation sequence of worthiness at least 0.857914, conditional on the
+    balanced-minima data (BalancedMinimaData) of the base note's lattice construction,
+    which enters as a hypothesis rather than an axiom.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Quot.sound", "Classical.choice"]
+  main_results:
+    - declaration: "Catalan.catalan_worthiness_gt_857914"
+      file: "RequestProject/Final.lean"
+      sorry_count: 0
+      axioms: ["propext", "Quot.sound", "Classical.choice"]
+      comparator_config: "comparator.config.json"
+      literature_dependencies:
+        - statement: "The balanced-minima estimates (22.20)–(22.23) and (22.25) of the base note, packaged as the structure BalancedMinimaData, enter as a hypothesis of the theorem."
+          source: "The base note on worthiness of approximation sequences"
+
+automation:
+  methods:
+    - method: "agent"
+      framework: "Aristotle (Harmonic), https://aristotle.harmonic.fun"
+      prompting_notes: "Initial formalization imported from an Aristotle run; see README."
+    - method: "agent"
+      framework: "Kimi Code CLI (Moonshot AI)"
+      prompting_notes: "Completed the in-progress Lean/mathlib v4.32.2 + PNT+ dependency upgrade and set up comparator/formalization.yaml."
+  notes: "Build-verified with `lake build` on leanprover/lean4:v4.32.2; main theorem additionally checked with leanprover/comparator."
+
+fidelity:
+  divergences: >
+    The worthiness invariant δ(q,p) is taken in EReal so that the liminf always exists
+    (Definition 1.2). The balanced-minima data of the base note's lattice construction
+    is packaged as the structure BalancedMinimaData and taken as a hypothesis of the
+    main theorems instead of being reproved. The weak prime number theorem is used in
+    the PNT+ normalization ψ(x) ~ x and adapted via Lcm.log_L_eq_psi.
+
+review:
+  status: "agent-reviewed"
+  reviewers: ["Aristotle (Harmonic)", "Kimi Code CLI"]
+  notes: >
+    No human peer review. The development type-checks under Lean v4.32.2 with zero
+    sorries in the project modules, and the main theorem is verified by
+    leanprover/comparator against comparator.config.json (challenge in Challenge.lean,
+    solution in Solution.lean).
+
+alignment:
+  namespace: "Catalan"
+  statements:
+    - source: "Definition 1.1 (admissible approximation sequence)"
+      lean: "Catalan.IsAdmissible"
+      module: "RequestProject/Worthiness.lean"
+      status: "proved"
+    - source: "Definition 1.2 (worthiness δ(q,p))"
+      lean: "Catalan.worthiness"
+      module: "RequestProject/Worthiness.lean"
+      status: "proved"
+    - source: "Theorem 10.1, equations (10.1)–(10.8) (unconditional note)"
+      lean: "Catalan.catalan_worthiness_of_balancedMinimaData, Catalan.catalan_worthiness_gt_857914"
+      module: "RequestProject/Final.lean"
+      status: "proved"
+    - source: "Theorem 11.1 (balanced two-row selection)"
+      lean: "Catalan.two_row_selection"
+      module: "RequestProject/TwoRow.lean"
+      status: "proved"
+    - source: "Estimates (22.20)–(22.23), (22.25) of the base note"
+      lean: "Catalan.BalancedMinimaData"
+      module: "RequestProject/Final.lean"
+      status: "literature-dependency"
+      note: "Packaged as a structure and taken as a hypothesis; not reproved."
+
+acknowledgements: >
+  Built on mathlib4 and PrimeNumberTheoremAnd (Alex Kontorovich and collaborators).
+  Initial formalization by Aristotle (Harmonic). Verification tooling:
+  leanprover/comparator with lean4export and landrun.
