@@ -1,5 +1,12 @@
 This project was edited by [Aristotle](https://aristotle.harmonic.fun).
 
+> **WIP / specification warning.** The current comparator theorem is a valid
+> consequence of the public `IsAdmissible` and `worthiness` definitions, but it
+> is not yet the intended Nesterenko-row theorem. Because the statement places
+> no provenance restriction on `q` and `p`, elementary rounding proves the same
+> `1-ε` bound for every real number. The structured Nesterenko proof still needs
+> its exact special-value bridge and real asymptotic rates formalized.
+
 ## API documentation
 
 Auto-generated with [doc-gen4](https://github.com/leanprover/doc-gen4) from the
@@ -27,10 +34,14 @@ standard. Validate it with:
 check-jsonschema --schemafile https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json formalization.yaml
 ```
 
-## Verifying the main result with comparator
+## Verifying the current WIP statement with comparator
 
-The main theorem (`Catalan.catalan_worthiness_gt_857914`, RequestProject/Final.lean)
-can be checked with [leanprover/comparator](https://github.com/leanprover/comparator):
+The current regression theorem (`Catalan.catalan_worthiness_one_sub_eps_unconditional`,
+`RequestProject/Unconditional.lean`) has no arithmetic or analytic hypotheses.
+In fact, the same construction proves the `1-ε` statement for every real
+number under the project's public `IsAdmissible` and `worthiness` definitions.
+This exposes the specification gap described above. It can be checked with
+[leanprover/comparator](https://github.com/leanprover/comparator):
 
 * `Challenge.lean` states the theorem with a `sorry` placeholder;
 * `Solution.lean` discharges the identical statement using the formalized proof;

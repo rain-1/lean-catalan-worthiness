@@ -1,0 +1,136 @@
+Exact Nesterenko period bridge: self-contained proof plan
+=========================================================
+
+This is the proof to be formalized.  It specializes Theorem 2 of
+Nesterenko's paper to
+
+  a1 = a2 = a3 = 4n,   b1 = b2 = 7n.
+
+No statement from that theorem is to remain as a Lean hypothesis.
+
+1. The rational series term
+---------------------------
+
+Put
+
+  R_n(t) = (3n)! (3/2)_(3n-1)/(4n)!
+           * prod_(r<4n) (t-r)
+           / prod_(r<=3n) (t+r+1/2)^2.
+
+For a natural number v define
+
+  w_v = v! (v+1/2)/(3/2)_v.
+
+This is v!/(3/2)_(v-1), including v=0 with the natural continued
+interpretation (3/2)_(-1)=2.  Direct cancellation gives
+
+  J_n = sum_(v>=0) w_v R_n(v)
+      = sum_(k>=0) w_(4n+k) R_n(4n+k),                 (P1)
+
+because R_n(v)=0 for v<4n.  The second series has initial term P_n and
+successive quotient
+
+  ((4n+k+1/2)(4n+k+1)^2) /
+  ((7n+k+3/2)^2(k+1)).
+
+Consequently its kth term is exactly
+
+  P_n (4n+1/2)_k (4n+1)_k^2 /
+      ((7n+3/2)_k^2 k!),                               (P2)
+
+which proves that the rational coefficient series underlying `nestJ2`
+is the series in (P1).  The proof of (P2) should be by induction on k;
+only the k=0 factorial identity and the displayed quotient are needed.
+
+2. The finite partial-fraction identity
+---------------------------------------
+
+Let
+
+  q_j(t) = (t+1)...(t+j)/(t+1/2)_(j+1).
+
+The exact identity to prove in Q(t) is
+
+  R_n(t) = sum_(j=0)^(3n) q_j(t)
+             (A1(n,j) + A2(n,j)/(t+j+1/2)).             (P3)
+
+For A2 use the positive audited factorial formula.  At the pole
+t=-j-1/2, multiplying by (t+j+1/2)^2 and evaluating gives precisely
+that formula.  After subtracting all double-pole terms, equality of the
+simple-pole coefficients from the largest j downwards is exactly
+`nestA1_triangular`.  Thus the difference of the two sides of (P3) has
+no finite poles.  Both sides tend to zero at infinity (the left side has
+degree -2(3n+1)+4n, and the coefficient of t^(-1) on the right is
+`sum_j A1(n,j)`).  Hence the difference is the zero polynomial and, at
+the same time,
+
+  sum_(j=0)^(3n) A1(n,j) = 0.                           (P4)
+
+This argument should be implemented with `RatFunc` numerator and
+denominator lemmas, not by an imported uniqueness assumption.
+
+3. Summing the basis
+--------------------
+
+For natural v,j, cancellation of rising factorials gives
+
+  w_v q_j(v) = (v+j)!/(3/2)_(v+j),                      (P5)
+
+and
+
+  w_v q_j(v)/(v+j+1/2)
+    = (v+j)!/((3/2)_(v+j)(v+j+1/2)).                   (P6)
+
+After inserting (P3) in (P1), shift m=v+j in each finite outer sum.
+The missing prefixes are exactly the finite double sum defining
+`nestCConcrete`.  Therefore
+
+  J_n = (sum_j A1(n,j)) f1(1)
+        + (sum_j A2(n,j)) f2(1) - C_n.
+
+Using (P4) and `nestB` this becomes
+
+  J_n = nestB(n) * f2(1) - nestCConcrete(n).             (P7)
+
+All interchanges here are a finite sum with a convergent series; no
+Fubini theorem for two infinite sums is needed.
+
+4. The 2-adic special value
+---------------------------
+
+Define in Q_2
+
+  f2_2 = sum_(m>=0)
+           m!/((3/2)_m(m+1/2)).                         (P8)
+
+Its summability follows directly from the factorial formula and the
+2-adic valuation tending to +infinity.  Prove the Nielsen/Beukers
+special-value identity internally,
+
+  f2_2 = xiCat/2 = 4 GZ2,                               (P9)
+
+where the second equality is already `GZ2_eq_xi_div_eight`.
+The first equality must be a proved hypergeometric transformation (or
+an explicit telescoping identity between convergent partial sums); it
+must not be introduced as a hypothesis.
+
+Taking the Q_2 sum in (P7), applying (P9), and using `nestB` gives
+
+  nestJ2 n = 4 * nestB n * GZ2 - nestCConcrete n.        (P10)
+
+Together with `nestJ2_v2`, (P10) removes the last p-adic field from the
+concrete `NesterenkoFormInputs` package.
+
+5. Real form
+------------
+
+The same rational coefficient identity (P2) holds over R.  Absolute
+convergence permits the real interpretation, and Euler's beta integral
+(proved by expanding (1-xy)^(-4n-1), followed by two beta integrals)
+identifies it with the positive double integral.  Nielsen's classical
+real identity f2(1)=4*catalanReal then yields
+
+  J_n(real) = 4 * nestB n * catalanReal - nestCConcrete n.
+
+This supplies the exact equality needed to turn the raw J-rate into the
+integer normalized linear-form rate.

@@ -10,7 +10,6 @@ import RequestProject.EIntegralityB
 import RequestProject.ZudilinLimit
 import RequestProject.EAbelLimit
 import RequestProject.Y2Integrality
-import RequestProject.PNT
 
 /-!
 # Assembling the unconditional theorem
@@ -25,8 +24,8 @@ explicit hypothesis.
   limits `G_E`, `G_Z`, and `log D_N = N + o(N)`.  Both identifications are now *proved* for
   `α = G` (Catalan's constant): `G_Z = G` in `ZudilinLimit.lean` and `G_E = G` in
   `EAbelLimit.lean`, so for the headline theorem
-  `catalan_worthiness_uncond_catalan` receives its prime-number-theorem input from PNT+
-  (`rate_Dlcm`). The integrality of both rows is now proved:
+  `catalan_worthiness_uncond_catalan` the only remaining hypothesis is `rate_D`, i.e. the prime
+  number theorem.  The integrality of both rows is now proved:
   the Zudilin numerator row `Y₂ n = 2^{e_{3n}} S n P_{3n}` is the explicit integer sequence
   `y2row` (`Y2Integrality.lean`).  The clearing
   exponents themselves are the explicit sequence `eZud` of equation (5.1), whose two required
@@ -474,12 +473,13 @@ theorem catalan_worthiness_uncond_GEreal
 
 Both limits are now identified with Catalan's constant — the Zudilin row in `ZudilinLimit.lean`
 (from Rivoal's identity) and the modular row in `EAbelLimit.lean` (from the accelerated series
-`∑_j 4^j/(C(2j,j)(2j+1)²) = 2G` and an Abel-type argument) — and PNT+ supplies the required
-prime number theorem. -/
-theorem catalan_worthiness_uncond_catalan :
+`∑_j 4^j/(C(2j,j)(2j+1)²) = 2G` and an Abel-type argument) — so the prime number theorem
+`rate_D` is the only remaining hypothesis. -/
+theorem catalan_worthiness_uncond_catalan
+    (rate_D : LogRate (fun N => ((Dlcm N : ℕ) : ℝ)) 1) :
     ∃ q p : ℕ → ℤ, IsAdmissible catalanReal q p ∧
       ((0.857914 : ℝ) : EReal) ≤ worthiness catalanReal q p :=
   catalan_worthiness_uncond_gt
-    ⟨GEreal_eq_catalanReal.symm, GZreal_eq_catalanReal.symm, rate_Dlcm⟩
+    ⟨GEreal_eq_catalanReal.symm, GZreal_eq_catalanReal.symm, rate_D⟩
 
 end Catalan

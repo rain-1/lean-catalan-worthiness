@@ -1,6 +1,6 @@
 {
     "challenge_module": "Challenge",
     "solution_module": "Solution",
-    "theorem_names": ["catalan_worthiness_gt_857914"],
+    "theorem_names": ["catalan_worthiness_one_sub_eps"],
     "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]
 }

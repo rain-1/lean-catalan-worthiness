@@ -1,0 +1,108 @@
+Direct proof of the audited A2 coefficient clearing
+===================================================
+
+For natural numbers 0 <= v <= u put
+
+  F(u,v) = (2u)! v! / (u! (2v)! (u-v)!).
+
+For every positive integer d,
+
+  floor(u/d) + floor(2v/d) + floor((u-v)/d)
+    <= floor(2u/d) + floor(v/d).                         (1)
+
+Proof.  Write u=qd+a and v=rd+b with 0<=a,b<d.  If b<=a,
+then r<=q, floor((u-v)/d)=q-r, and monotonicity gives
+floor(2b/d)<=floor(2a/d).  If a<b, then r<q and
+floor((u-v)/d)=q-r-1; both floor(2a/d) and floor(2b/d)
+belong to {0,1}.  These two cases give (1).
+
+Apply (1) with d=p^i and sum over i>=1.  Legendre's formula
+then says that, for every prime p,
+
+  v_p(u! (2v)! (u-v)!) <= v_p((2u)! v!).
+
+Consequently F(u,v) is an integer.
+
+For 0<=j<=3n, direct cancellation in the audited formula gives
+
+  4^(7n-j) A2(n,j)
+    = 2 choose(3n,j) F(4n+j,j) F(3n,j).                 (2)
+
+Every factor on the right of (2) is integral, proving
+
+  4^(7n-j) A2(n,j) in Z.
+
+Lean implementation
+-------------------
+
+`RequestProject/NesterenkoRow.lean` now contains kernel-checked proofs:
+
+  factorial_ratio_floor_le
+  factorial_ratio_dvd
+  nestFactorialRatio_isInt
+  nestA2_scaled_factorization
+  nestA2_scaled_isInt
+
+No coefficient-integrality or prime-window hypothesis is used by these
+lemmas.
+
+Conservative Pochhammer clearing
+--------------------------------
+
+For 0 <= nu < 3n, Legendre's formula also gives
+
+  (2nu+1)! | D_(6n) 4^nu (nu!)^2.
+
+At p=2, the last factor 2nu+1 is odd and
+v_2((2nu)!) <= 2nu, which is supplied by 4^nu.  At an odd prime p,
+put e=floor(log_p(2nu+1)).  At every p-adic level,
+
+  floor((2nu+1)/p^i) <= 2 floor(nu/p^i)+1.
+
+There are e relevant levels, and p^e <= 2nu+1 <= 6n, so D_(6n)
+supplies the remaining e powers.  Therefore
+
+  D_(6n) nu!/(3/2)_nu in Z.
+
+This is formalized by `two_mul_add_one_div_le`,
+`pochhammer_factorial_dvd`, and
+`Dlcm_mul_factorial_div_pochhammer_isInt` in the same Lean file.
+
+Simple-pole clearing
+--------------------
+
+The backward triangular equation propagates integrality from the diagonal
+term A2(n,j) M(n,j).  After multiplication by 4^(7n-j)D_(6n), the kernel
+h_l=choose(2l,l)/4^l cancels the l-step difference in powers of four.
+The A1 term is supplied by descending induction, while the A2/l term is
+cleared because l divides D_(6n).
+
+It remains to clear the long odd denominators
+
+  m = 2(j+r)+1,  0 <= r < 4n.
+
+Write a=v_p(m).  If p^a <= 6n, the LCM supplies the whole prime power.  If
+p^a>6n, then m<14n and m is odd.  Any complementary factor greater than one
+would therefore be at least three and would force p^a<m/3<6n, a
+contradiction.  Hence m=p^a.  The LCM supplies p^(a-1).  At the Legendre
+level p^a, the first factorial quotient F(4n+j,j) has a strict floor carry:
+
+  floor((8n+2j)/p^a) - floor((4n+j)/p^a) = 1,
+
+while the other three floors vanish because p^a>6n.  Thus F supplies the
+last p.  This proves
+
+  m | D_(6n) 4^(7n-j) A2(n,j).
+
+The resulting Lean chain in `NesterenkoCoefficients.lean` is:
+
+  one_le_factorization_nestFactorialRatioNat_of_pow
+  long_odd_dvd_Dlcm_mul_nestA2ScaledNat
+  nestA2_long_odd_mem_ZSub
+  nestA2_diagonal_mem_of_long_odd
+  nestA1_scaled_isInt
+  nestCConcrete_scaled_isInt
+
+Therefore both halves of the specialized Nesterenko coefficient-clearing
+theorem and the conservative `4^(7n)D_(6n)^2 C_n` integrality theorem are now
+kernel checked without literature or prime-window hypotheses.

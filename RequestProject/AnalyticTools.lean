@@ -184,9 +184,9 @@ theorem subst_identity (c : ℕ → ℝ) (A : ℕ → ℝ) (hA : ∀ n, A n = su
       analyticAt_id.mul (analyticAt_const.sub (analyticAt_const.mul analyticAt_id))
     have := AnalyticAt.comp (g := fun w : ℝ => ∑' k, c k * w ^ k)
       (f := fun y : ℝ => y * (1 - 4 * y)) (hg _ (hmap y hy)) hpoly
-    convert this using 1
-    ext z
-    rfl
+    change AnalyticAt ℝ
+      ((fun w : ℝ => ∑' k, c k * w ^ k) ∘ fun y : ℝ => y * (1 - 4 * y)) y
+    exact this
   have heq : (fun x : ℝ => ∑' n, A n * x ^ n)
       =ᶠ[𝓝 (0 : ℝ)] (fun y : ℝ => ∑' k, c k * (y * (1 - 4 * y)) ^ k) := by
     filter_upwards [Metric.ball_mem_nhds (0 : ℝ) (show (0:ℝ) < 1/32 by norm_num)] with y hy

@@ -434,8 +434,9 @@ noncomputable def Nfun (F : ℝ) (ε : ℕ → ℝ) (n : ℕ) : ℝ :=
 lemma tendsto_sqrt_eps {ε : ℕ → ℝ} (hε0 : Tendsto ε atTop (𝓝 0)) :
     Tendsto (fun n => Real.sqrt (ε n)) atTop (𝓝 0) := by
   have := (Real.continuous_sqrt.tendsto 0).comp hε0
-  rw [show (fun n => Real.sqrt (ε n)) = (fun x => Real.sqrt x) ∘ ε by rfl]
-  simpa using this
+  rw [Real.sqrt_zero] at this
+  change Tendsto ((fun x : ℝ => Real.sqrt x) ∘ ε) atTop (𝓝 0)
+  exact this
 
 lemma tendsto_Dfun_div {H : ℝ} {ε : ℕ → ℝ} (hε0 : Tendsto ε atTop (𝓝 0)) :
     Tendsto (fun n : ℕ => Dfun H ε n / n) atTop (𝓝 H) := by

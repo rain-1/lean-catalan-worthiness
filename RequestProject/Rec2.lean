@@ -71,8 +71,9 @@ lemma padicValRat_two_of_odd_int {k : ℤ} (hk : Odd k) : padicValRat 2 (k : ℚ
 
 lemma padicValRat_two_two_pow (k : ℕ) : padicValRat 2 ((2 : ℚ) ^ k) = k := by
   rw [padicValRat.pow]
-  have h2 : ((2 : ℕ) : ℚ) = (2 : ℚ) := by norm_num
-  rw [← h2, padicValRat_two_natCast]
+  have h2 : padicValRat 2 (2 : ℚ) = 1 :=
+    padicValRat.self (p := 2) (by norm_num)
+  rw [h2]
   simp
 
 /-- Generic induction step for the exact `2`-adic valuation of a solution of a two-term

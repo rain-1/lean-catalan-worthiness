@@ -53,6 +53,36 @@ lemma eZud_three_mul_ge (n : ℕ) (hn : 1 ≤ n) : 12 * n + 3 ≤ eZud (3 * n) :
   simp only [eZud, le_min_iff]
   omega
 
+/-- **The general clearing statement for the Zudilin numerator**: if the dyadic exponent is at
+least `4m + 3` and the lcm index `N` is at least `2m - 1`, then `2^e D_N² P_m` is an integer. -/
+theorem two_pow_mul_Dlcm_sq_mul_Pz_isInt (m e N : ℕ) (he : 4 * m + 3 ≤ e) (hmN : m ≤ N)
+    (hN : 2 * m ≤ N + 1) :
+    ∃ z : ℤ, (z : ℚ) = 2 ^ e * (Dlcm N : ℚ) ^ 2 * Pz m := by
+  obtain ⟨t, ht⟩ := Dlcm_dvd_Dlcm hmN
+  have h1 : (2 : ℚ) ^ e * (Dlcm N : ℚ) ^ 2 * (Qz m * sigmaCat m) ∈ ZSub := by
+    obtain ⟨z1, hz1⟩ := two_pow_mul_Qz_isInt m e (by omega)
+    obtain ⟨z2, hz2⟩ := Dlcm_sq_mul_sigmaCat_isInt m N hN
+    refine (mem_ZSub_iff _).2 ⟨z1 * z2, ?_⟩
+    push_cast
+    rw [hz1, hz2]
+    ring
+  have h2 : (2 : ℚ) ^ e * (Dlcm N : ℚ) ^ 2 * ((-1 : ℚ) ^ m / 8 * bp (xpt m) m) ∈ ZSub := by
+    obtain ⟨z, hz⟩ := two_pow_mul_Dlcm_sq_mul_bp_isInt m
+    refine (mem_ZSub_iff _).2 ⟨(-1) ^ m * 2 ^ (e - 3 - 4 * m) * (t : ℤ) ^ 2 * z, ?_⟩
+    have hsplit : (2 : ℚ) ^ e = 2 ^ (e - 3 - 4 * m) * 2 ^ (4 * m) * 8 := by
+      rw [show (8 : ℚ) = 2 ^ 3 by norm_num, ← pow_add, ← pow_add]
+      congr 1
+      omega
+    have hD : (Dlcm N : ℚ) = (Dlcm m : ℚ) * (t : ℚ) := by
+      exact_mod_cast congrArg (fun s : ℕ => (s : ℚ)) ht
+    push_cast
+    rw [hsplit, hD]
+    linear_combination ((-1 : ℚ) ^ m * 2 ^ (e - 3 - 4 * m) * (t : ℚ) ^ 2) * hz
+  obtain ⟨z, hz⟩ := (mem_ZSub_iff _).1 (add_mem h1 h2)
+  refine ⟨z, ?_⟩
+  rw [hz, rivoal_numerator m]
+  ring
+
 /-- **The Zudilin second row is an integer.** -/
 theorem Y2row_isInt (n : ℕ) : ∃ z : ℤ, (z : ℚ) = Y2row eZud n := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
@@ -60,35 +90,13 @@ theorem Y2row_isInt (n : ℕ) : ∃ z : ℤ, (z : ℚ) = Y2row eZud n := by
     have hP : Pz 0 = 0 := by
       simp
     simp [Y2row, hP]
-  · set m := 3 * n with hm
-    set e := eZud (3 * n) with he
-    have hem : 4 * m + 3 ≤ e := by
+  · have hem : 4 * (3 * n) + 3 ≤ eZud (3 * n) := by
       have := eZud_three_mul_ge n hn
       omega
-    have hDdvd : Dlcm m ∣ Dlcm (6 * n) := Dlcm_dvd_Dlcm (by omega)
-    obtain ⟨t, ht⟩ := hDdvd
-    have h1 : (2 : ℚ) ^ e * (Dlcm (6 * n) : ℚ) ^ 2 * (Qz m * sigmaCat m) ∈ ZSub := by
-      obtain ⟨z1, hz1⟩ := two_pow_mul_Qz_isInt m e (by omega)
-      obtain ⟨z2, hz2⟩ := Dlcm_sq_mul_sigmaCat_isInt m (6 * n) (by omega)
-      refine (mem_ZSub_iff _).2 ⟨z1 * z2, ?_⟩
-      push_cast
-      rw [hz1, hz2]
-      ring
-    have h2 : (2 : ℚ) ^ e * (Dlcm (6 * n) : ℚ) ^ 2 * ((-1 : ℚ) ^ m / 8 * bp (xpt m) m) ∈ ZSub := by
-      obtain ⟨z, hz⟩ := two_pow_mul_Dlcm_sq_mul_bp_isInt m
-      refine (mem_ZSub_iff _).2 ⟨(-1) ^ m * 2 ^ (e - 3 - 4 * m) * (t : ℤ) ^ 2 * z, ?_⟩
-      have hsplit : (2 : ℚ) ^ e = 2 ^ (e - 3 - 4 * m) * 2 ^ (4 * m) * 8 := by
-        rw [show (8 : ℚ) = 2 ^ 3 by norm_num, ← pow_add, ← pow_add]
-        congr 1
-        omega
-      have hD : (Dlcm (6 * n) : ℚ) = (Dlcm m : ℚ) * (t : ℚ) := by
-        exact_mod_cast congrArg (fun s : ℕ => (s : ℚ)) ht
-      push_cast
-      rw [hsplit, hD]
-      linear_combination ((-1 : ℚ) ^ m * 2 ^ (e - 3 - 4 * m) * (t : ℚ) ^ 2) * hz
-    obtain ⟨z, hz⟩ := (mem_ZSub_iff _).1 (add_mem h1 h2)
+    obtain ⟨z, hz⟩ :=
+      two_pow_mul_Dlcm_sq_mul_Pz_isInt (3 * n) (eZud (3 * n)) (6 * n) hem (by omega) (by omega)
     refine ⟨z, ?_⟩
-    rw [hz, Y2row, Sfac, rivoal_numerator m]
+    rw [hz, Y2row, Sfac]
     push_cast
     ring
 

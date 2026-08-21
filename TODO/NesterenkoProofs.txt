@@ -1,0 +1,134 @@
+Nesterenko (4,7) row: proof plan and formalization contract
+=============================================================
+
+This note turns TODO/help.txt into a self-contained list of proofs to be
+formalized.  It deliberately separates results which follow from the currently
+checked project from the missing row-definition layer.
+
+1. Explicit finite row
+----------------------
+
+For 0 <= j <= 3n define
+
+ A2(n,j) = 2^(-14n+2j+1) *
+   (8n+2j)! j! (6n)! /
+   ((4n)! (4n+j)! (3n-j)!^2 (2j)!^2),
+
+ B(n) = sum_{j=0}^{3n} A2(n,j).
+
+The checked development now defines `nestA2`, `nestB`, and the original
+partial-fraction `nestC` in `RequestProject/NesterenkoRow.lean`.  The numerator
+is parameterized by the simple-pole sequence A1(n,j), so the specialized A1
+coefficient-clearing theorem can be used directly.  The normalizations to prove
+are
+
+ aN(n) = 4^(7n+1) B(n),   yN(n) = 4^(7n) D_(6n)^2 C(n),
+
+with integer-valued aN and yN.  The conservative integrality proof is termwise:
+use the supplied coefficient clearing, D_(6n) * nu!/(3/2)_nu integral, and
+2 D_(6n)/(2nu+1) integral.
+
+2. Exact denominator valuation
+-------------------------------
+
+Legendre's formula v2(m!) = m - s2(m), applied to A2, yields
+
+ v2(A2(n,j)) = -14n + 2j + 1 + s2(n) - s2(3n)
+                + 2 s2(3n-j) + s2(j).                         (V1)
+
+Here use s2(2m)=s2(m), s2(8n+2j)=s2(4n+j), and s2(6n)=s2(3n).
+At j=0 this is
+
+ v2(A2(n,0)) = 1 + s2(n) + s2(3n) - 14n.                      (V2)
+
+For 1 <= j <= 3n, subtraction of (V2) from (V1), followed by
+s2(a+b) <= s2(a)+s2(b) for 3n=(3n-j)+j, gives
+
+ v2(A2(n,j))-v2(A2(n,0)) >= 2j-s2(j) >= j > 0.                (V3)
+
+Thus A2(n,0) is the unique least-valuation term in B(n).  The
+non-archimedean unique-minimum rule proves
+
+ v2(B(n)) = 1+s2(n)+s2(3n)-14n,
+ v2(4B(n)) = 3+s2(n)+s2(3n)-14n.                              (V4)
+
+Lean milestones: prove binary digit-sum subadditivity, then the valuation of
+the factorial quotient, positivity of each A2, strict-minimum valuation for a
+Finset.sum, and finally (V4).
+
+3. Linear-form valuation
+-------------------------
+
+The required period identity is
+
+ J(n) = 4 B(n) GZ2 - C(n) = P(n) H(n),
+ P(n) = 4^(7n+2) (8n)! (6n)! (7n+1)!^2 / (14n+2)!^2,
+
+where H(n)=sum_{k>=0} h(n,k) and
+
+ h(n,k) = (4n+1/2)_k (4n+1)_k^2 /
+          ((7n+3/2)_k^2 k!).
+
+The half-integral Pochhammer valuations give v2(h(n,k)) >= k.  Hence the tail
+(k>=1) is in 2 Z_2, H(n) is a 2-adic unit, and v2(H(n))=0.
+Legendre on P(n) gives
+
+ v2(P(n)) = 14n+2-s2(n)-s2(3n),
+
+so v2(J(n)) has the same value.  Combining this with (V4) proves the existing
+slope-28 tail theorem.  Formalization requires a summability/tail-divisibility
+lemma for the explicit series and a checked partial-fraction/period bridge.
+
+4. Archimedean rates
+--------------------
+
+For J(n), use the positive double integral with
+
+ Phi(x,y)=x^4(1-x)^3 y^4(1-y)^3/(1-xy)^4,
+ W(x,y)=x^(-1/2)(1-y)^(-1/2)/(1-xy).
+
+Writing u=x/(1-x), v=y/(1-y), and r^2=uv shows Phi <=
+Psi(r)=r^8/((1+r)^6(1+2r)^4).  Its unique positive maximizer is
+r=(5+sqrt(57))/4, and max Phi=(TminusNC)^2.  Positivity and continuity on a
+small rectangle around the maximizer give matching upper/lower exponential
+bounds, hence log J(n)/n -> 2 log TminusNC.
+
+For B(n), Stirling applied uniformly to A2(n,j) gives the entropy function f
+from help.txt, whose unique maximizer is (-15+3 sqrt(57))/4.  Since all A2 are
+positive, max_j A2 <= B <= (3n+1) max_j A2, yielding log B(n)/n -> 2 log
+TplusNC.  These are substantial new analytic developments: the project needs a
+uniform Stirling/max-of-finite-sum library before they can be kernel checked.
+
+5. Resulting dependency boundary
+---------------------------------
+
+After Sections 1--4 are formalized, the near-critical theorem can instantiate
+the Nesterenko row directly and retain only the PNT input
+LogRate (fun n => (Dlcm n : R)) 1.  The exact partial-fraction period relation
+is the remaining named literature bridge for the intermediate build; replacing
+the explicit definitions with an opaque structure would merely move, not
+remove, the other assumptions.
+
+6. Audited integrality material and its precise limit
+------------------------------------------------------
+
+The newly supplied full-LCM paper proves the following usable normalization
+facts (with the positive A2 convention):
+
+  * 4^(7n-j) A2(n,j) is integral;
+  * 4^(7n-j) D_(6n) A1(n,j) is integral;
+  * D_(6n) nu!/(3/2)_nu and 2D_(6n)/(2nu+1) are integral in the stated
+    ranges;
+  * therefore 4^(7n) B(n) and 4^(7n)D_(6n)^2 C(n) are integral.
+
+The adjoint and prime-window material belongs to a sharper, separate
+normalization and is deliberately not in this development's dependency graph.
+The conservative `D_(6n)^2` clearing is termwise from the two specialized
+coefficient-clearing facts and the elementary harmonic-denominator lemmas.
+
+The second of those elementary lemmas is already formalized as
+`two_mul_Dlcm_div_odd_isInt`: for nu < 3n, `2nu+1` lies in the defining range
+of `D_(6n)`, so writing `D_(6n)=(2nu+1)c` makes
+`2D_(6n)/(2nu+1)=2c` an integer.  The remaining Pochhammer-denominator lemma
+is the next arithmetic target; it uses
+`nu!/(3/2)_nu = 4^nu (nu!)^2/(2nu+1)!` and the supplied prime-by-prime bound.

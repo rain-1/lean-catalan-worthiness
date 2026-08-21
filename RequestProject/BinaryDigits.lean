@@ -63,4 +63,32 @@ lemma s2_two_mul (m : ℕ) : s2 (2 * m) = s2 m := by
     simp [s2, this, Nat.mul_div_cancel_left m (by norm_num : 0 < 2),
       Nat.mul_mod_right]
 
+/-- Appending a binary `1` increases the digit sum by one. -/
+lemma s2_two_mul_add_one (m : ℕ) : s2 (2 * m + 1) = s2 m + 1 := by
+  have hpos : 0 < 2 * m + 1 := by omega
+  have hdigits : Nat.digits 2 (2 * m + 1) =
+      (2 * m + 1) % 2 :: Nat.digits 2 ((2 * m + 1) / 2) :=
+    Nat.digits_def' (by norm_num) hpos
+  unfold s2
+  rw [hdigits, show (2 * m + 1) / 2 = m by omega]
+  norm_num
+  omega
+
+/-- Binary digit sums are subadditive.  The proof compares the `2`-adic
+valuation of `(a+b)!` with those of `a!`, `b!`, and the binomial coefficient. -/
+lemma s2_add_le (a b : ℕ) : s2 (a + b) ≤ s2 a + s2 b := by
+  have hfac := Nat.add_choose_mul_factorial_mul_factorial a b
+  have hchoose : (a + b).choose b ≠ 0 := Nat.choose_ne_zero (Nat.le_add_left b a)
+  have hval : padicValNat 2 (Nat.factorial (a + b)) =
+      padicValNat 2 ((a + b).choose b) + padicValNat 2 (Nat.factorial a) +
+        padicValNat 2 (Nat.factorial b) := by
+    rw [← hfac, padicValNat.mul (mul_ne_zero hchoose (Nat.factorial_ne_zero a))
+      (Nat.factorial_ne_zero b), padicValNat.mul hchoose (Nat.factorial_ne_zero a)]
+  rw [padicValNat_two_factorial, padicValNat_two_factorial,
+    padicValNat_two_factorial] at hval
+  have ha := s2_le a
+  have hb := s2_le b
+  have hab := s2_le (a + b)
+  omega
+
 end Catalan

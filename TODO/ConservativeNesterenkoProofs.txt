@@ -1,0 +1,109 @@
+Conservative Nesterenko row: proof obligations
+===============================================
+
+This note concerns only the conservative row used by the near-critical
+construction.  It does not use the sharper u_n normalization or its open
+prime-window congruence.
+
+Definitions
+-----------
+
+For 0 <= j <= 3n,
+
+ A2(n,j) = 2^(-14n+2j+1) (8n+2j)! j! (6n)! /
+           ((4n)! (4n+j)! (3n-j)!^2 (2j)!^2),
+ B(n) = sum_(0<=j<=3n) A2(n,j).
+
+The numerator is the original partial-fraction sum
+
+ C(n) = sum_j sum_(nu<j) nu!/(3/2)_nu
+          * (A1(n,j) + A2(n,j)/(nu+1/2)).
+
+The specialised coefficient-clearing theorem needed for the conservative
+normalization is
+
+  4^(7n-j) A2(n,j)             is integral,
+  4^(7n-j) D_(6n) A1(n,j)      is integral.                 (I)
+
+Exact valuation of B
+--------------------
+
+For n >= 1,
+
+ v2(A2(n,j)) = -14n+2j+1+s2(n)-s2(3n)
+                +2s2(3n-j)+s2(j).                           (V1)
+
+Proof: apply Legendre v2(m!)=m-s2(m) to the factorial formula.  The linear
+factorial terms cancel; use s2(8n+2j)=s2(4n+j), s2(6n)=s2(3n),
+s2(4n)=s2(n), and s2(2j)=s2(j).
+
+At j=0,
+
+ v2(A2(n,0)) = 1+s2(n)+s2(3n)-14n.                          (V2)
+
+For 1 <= j <= 3n, binary subadditivity applied to
+3n=(3n-j)+j gives
+
+ v2(A2(n,j))-v2(A2(n,0))
+ = 2j+2s2(3n-j)+s2(j)-2s2(3n)
+ >= 2j-s2(j) >= j > 0.
+
+Thus j=0 is the unique least-valuation summand.  The finite nonarchimedean
+unique-minimum rule proves
+
+ v2(B(n)) = 1+s2(n)+s2(3n)-14n,
+ v2(4B(n)) = 3+s2(n)+s2(3n)-14n.                             (V3)
+
+Conservative clearing of C
+--------------------------
+
+Assuming (I), prove
+
+ 4^(7n)D_(6n)^2C(n) is integral.                             (C1)
+
+Fix nu<j<=3n and put r_nu=nu!/(3/2)_nu.  The identity
+
+ r_nu = 4^nu(nu!)^2/(2nu+1)!                                 (C2)
+
+shows D_(6n)r_nu is integral.  For p=2, 4^nu clears the
+denominator.  For odd p, Legendre bounds its negative valuation by
+
+ sum_a(floor((2nu+1)/p^a)-2floor(nu/p^a))
+ <= floor(log_p(2nu+1)) <= v_p(D_(6n)).
+
+Also 2nu+1 divides D_(6n), so 2D_(6n)/(2nu+1) is integral.
+
+The A1 part of one summand factors as
+
+ D_(6n)r_nu * 4^j * [4^(7n-j)D_(6n)A1(n,j)].
+
+The A2/(nu+1/2) part factors as
+
+ D_(6n)r_nu * 4^j * [4^(7n-j)A2(n,j)]
+ * [2D_(6n)/(2nu+1)].
+
+Every displayed factor is integral.  Finite summation proves (C1).
+
+Integer row and period bridge
+-----------------------------
+
+The first half of (I) gives 4^(7n)B(n) integral.  Thus
+
+ V(n)=4^(7n+1)D_(6n)^2B(n),
+ U(n)=4^(7n)D_(6n)^2C(n)
+
+are integers, the second statement by (C1).  With the supplied
+partial-fraction identity J(n)=4B(n)G-C(n), direct distribution gives
+
+ V(n)G-U(n)=4^(7n)D_(6n)^2J(n).
+
+Lean order
+----------
+
+1. Prove `nestA2` factorial valuation, strict minimality, and the finite
+   unique-minimum lemma to obtain (V3).
+2. Keep the specialised A1 clearing as an explicit literature theorem while
+   proving the A2 half directly.
+3. Formalize (C2) prime-by-prime and use the already formalized odd-denominator
+   lemma to obtain (C1).
+4. Attach the period bridge, hypergeometric unit, and prefactor valuation.

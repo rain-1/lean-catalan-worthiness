@@ -39,22 +39,22 @@ status:
   scope: >
     Formalizes the worthiness (construction quality) invariant δ(q,p) for admissible
     approximation sequences, Archimedean and p-adic rate machinery for the Pade/Zudilin
-    approximants to Catalan's constant, and assembles the main theorem: an admissible
-    approximation sequence of worthiness at least 0.857914, conditional on the
-    balanced-minima data (BalancedMinimaData) of the base note's lattice construction,
-    which enters as a hypothesis rather than an axiom.
+    and Nesterenko approximants to Catalan's constant. This is work in progress:
+    the current comparator statement has a known specification gap because it does
+    not constrain the witnesses to the intended Nesterenko row. Under the public
+    definitions its 1-ε conclusion follows for every real number from elementary
+    rounding. The structured no-input theorem is not yet complete.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Quot.sound", "Classical.choice"]
   main_results:
-    - declaration: "Catalan.catalan_worthiness_gt_857914"
-      file: "RequestProject/Final.lean"
+    - declaration: "Catalan.catalan_worthiness_one_sub_eps_unconditional"
+      file: "RequestProject/Unconditional.lean"
       sorry_count: 0
       axioms: ["propext", "Quot.sound", "Classical.choice"]
       comparator_config: "comparator.config.json"
-      literature_dependencies:
-        - statement: "The balanced-minima estimates (22.20)–(22.23) and (22.25) of the base note, packaged as the structure BalancedMinimaData, enter as a hypothesis of the theorem."
-          source: "The base note on worthiness of approximation sequences"
+      literature_dependencies: []
+      note: "WIP regression theorem exposing the weak existential specification; not the intended structured Nesterenko result."
 
 automation:
   methods:
@@ -64,15 +64,17 @@ automation:
     - method: "agent"
       framework: "Kimi Code CLI (Moonshot AI)"
       prompting_notes: "Completed the in-progress Lean/mathlib v4.32.2 + PNT+ dependency upgrade and set up comparator/formalization.yaml."
-  notes: "Build-verified with `lake build` on leanprover/lean4:v4.32.2; main theorem additionally checked with leanprover/comparator."
+  notes: "WIP. Build-verified with `lake build` on leanprover/lean4:v4.32.2; the current specification-gap regression theorem is configured for comparator."
 
 fidelity:
   divergences: >
     The worthiness invariant δ(q,p) is taken in EReal so that the liminf always exists
-    (Definition 1.2). The balanced-minima data of the base note's lattice construction
-    is packaged as the structure BalancedMinimaData and taken as a hypothesis of the
-    main theorems instead of being reproved. The weak prime number theorem is used in
-    the PNT+ normalization ψ(x) ~ x and adapted via Lcm.log_L_eq_psi.
+    (Definition 1.2).  In particular, admissibility does not require the linear forms
+    q n * α - p n to tend to zero.  Therefore the elementary choice q n = 2^(n+1),
+    p n = floor (q n * α) - 1 already proves the exported 1-ε theorem for every
+    real α.  The more structured Nesterenko-row development is retained separately;
+    its remaining special-value and real-rate bridges are not dependencies of the
+    exported theorem.
 
 review:
   status: "agent-reviewed"
@@ -94,10 +96,11 @@ alignment:
       lean: "Catalan.worthiness"
       module: "RequestProject/Worthiness.lean"
       status: "proved"
-    - source: "Theorem 10.1, equations (10.1)–(10.8) (unconditional note)"
-      lean: "Catalan.catalan_worthiness_of_balancedMinimaData, Catalan.catalan_worthiness_gt_857914"
-      module: "RequestProject/Final.lean"
+    - source: "Current weak existential statement (WIP regression test)"
+      lean: "Catalan.catalan_worthiness_one_sub_eps_unconditional"
+      module: "RequestProject/Unconditional.lean"
       status: "proved"
+      note: "This is not yet aligned with the intended Nesterenko-row provenance."
     - source: "Theorem 11.1 (balanced two-row selection)"
       lean: "Catalan.two_row_selection"
       module: "RequestProject/TwoRow.lean"

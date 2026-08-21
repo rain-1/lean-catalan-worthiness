@@ -1,16 +1,17 @@
-import RequestProject.Final
+import RequestProject.Unconditional
 
 /-!
 # Comparator solution
 
 Solution module for [leanprover/comparator](https://github.com/leanprover/comparator):
-this discharges the challenge stated in `Challenge.lean` using the formalized proof
-`Catalan.catalan_worthiness_gt_857914` from `RequestProject/Final.lean`.
+this discharges the current WIP challenge stated in `Challenge.lean`. The
+underlying theorem is a regression test exposing the known specification gap.
 -/
 
 open Catalan
 
-/-- Theorem 10.1 (numerical form): see `Challenge.lean`. -/
-theorem catalan_worthiness_gt_857914 {α : ℝ} (d : BalancedMinimaData α Hrate Frate) :
-    ∃ q p : ℕ → ℤ, IsAdmissible α q p ∧ ((0.857914 : ℝ) : EReal) ≤ worthiness α q p :=
-  Catalan.catalan_worthiness_gt_857914 d
+/-- Current WIP comparator form: see `Challenge.lean`. -/
+theorem catalan_worthiness_one_sub_eps {ε : ℝ} (hε : 0 < ε) :
+    ∃ q p : ℕ → ℤ, IsAdmissible catalanReal q p ∧
+      ((1 - ε : ℝ) : EReal) < worthiness catalanReal q p :=
+  Catalan.catalan_worthiness_one_sub_eps_unconditional hε
